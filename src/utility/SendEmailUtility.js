@@ -11,7 +11,7 @@ const SendEmailUtility = async(EmailTo,EmailSubject,EmailText)=>{
       });
     //   the email message
       let mailOption = {
-        from: '"A2it_HRM" <a2itashikk@gmail.com>',
+        from: '"A2it_HRM" <a2itsohada@gmail.com>',
         to: EmailTo,
         subject: EmailSubject,
         text: EmailText
