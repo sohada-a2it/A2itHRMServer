@@ -1,9 +1,11 @@
 // seedAdmin.js
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const bcrypt = require("bcryptjs");
 
 dotenv.config();
+
+// Import User model
+const User = require("../models/UsersModel");
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -18,78 +20,54 @@ mongoose
 
 const seedAdmin = async () => {
   try {
-    // Import the User model
-    const User = require("../models/UsersModel");
-    
-    console.log("\n=== Creating Admin User ===");
-    
-    // Hash password manually (since we'll use raw insert)
-    const hashedPassword = await bcrypt.hash("Admin@123", 10);
-    
-    // Prepare admin data according to your schema
-const adminData = {
-  firstName: "Super",
-  lastName: "Admin",
-  email: "shohana@gmail.com",
-  password: hashedPassword,
-  role: "admin",
-  isActive: true,
-  status: "active",
-  department: "Administration",
-  designation: "System Admin",
-  phone: "01700000000",
-  AdminId: "ADMIN-001",
-  picture: "https://example.com/default-avatar.png",
-  createdAt: new Date(),
-  updatedAt: new Date()
-};
-    
-    console.log("Admin data to insert:", adminData);
-    
-    // Method 1: Direct MongoDB insert (bypasses pre-save hook)
-    const db = mongoose.connection.db;
-    
+    console.log("\n=== Seeding Admin User ===");
+
+    // Admin data
+    const adminData = {
+      firstName: "Super",
+      lastName: "Admin",
+      email: "a2itsohada@gmail.com",
+      password: "Admin123", // will be hashed in pre-save hook if schema has it
+      role: "admin",
+      isActive: true,
+      status: "active",
+      department: "Administration",
+      designation: "System Admin",
+      phone: "01700000000",
+      AdminId: "ADMIN-001",
+      picture: "https://example.com/default-avatar.png",
+    };
+
     // Check if admin already exists
-    const existingAdmin = await db.collection("users").findOne({ 
-      email: "admin@gmail.com" 
-    });
-    
-    if (existingAdmin) {
-      console.log("\n⚠️ Admin already exists. Updating...");
-      
-      await db.collection("users").updateOne(
-        { email: "admin@gmail.com" },
-        { $set: adminData }
-      );
-      
+    let admin = await User.findOne({ email: adminData.email });
+
+    if (admin) {
+      console.log("⚠️ Admin already exists. Updating info...");
+      Object.assign(admin, adminData);
+      await admin.save();
       console.log("✅ Admin updated successfully!");
     } else {
-      console.log("\nCreating new admin...");
-      
-      await db.collection("users").insertOne(adminData);
-      
+      console.log("Creating new admin...");
+      admin = await User.create(adminData);
       console.log("✅ Admin created successfully!");
     }
-    
-    // Verify
-    const createdAdmin = await db.collection("users").findOne({ 
-      email: "shohana@gmail.com" 
-    });
-    
+
+    // Verification
     console.log("\n=== Verification ===");
-    console.log("Email:", createdAdmin.email);
-    console.log("Role:", createdAdmin.role);
-    console.log("Name:", createdAdmin.name);
-    
-    process.exit();
+    console.log("Name:", admin.firstName + " " + admin.lastName);
+    console.log("Email:", admin.email);
+    console.log("Role:", admin.role);
+    console.log("ID:", admin.AdminId);
+
+    process.exit(0);
   } catch (err) {
     console.error("\n❌ Error seeding admin:", err.message);
-    console.error("Stack:", err.stack);
+    console.error(err.stack);
     process.exit(1);
   }
 };
 
-// Run after connection is established
+// Run seeding after connection is ready
 mongoose.connection.once("open", () => {
   seedAdmin();
 });
