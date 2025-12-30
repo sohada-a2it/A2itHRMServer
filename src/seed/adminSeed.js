@@ -37,10 +37,11 @@ const adminData = {
   // Organization
   department: "Administration",
   designation: "System Admin",
+  joiningDate: new Date(), // today
 
   // Contact
   phone: "01700000000",
-  AdminId: "ADMIN-001",
+  AdminId: "ADMIN-" + Date.now(),
 
   // Profile
   picture: "https://example.com/default-avatar.png",
@@ -50,6 +51,7 @@ const adminData = {
   isSuperAdmin: true,
   permissions: ["manage_users", "view_reports"],
 };
+
 
 
     // Check if admin already exists
