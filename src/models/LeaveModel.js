@@ -26,7 +26,7 @@ const leaveSchema = new mongoose.Schema(
       default: 'Pending'
     },
     reason: { type: String },
-    createdBy: {
+    approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     }

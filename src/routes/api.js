@@ -71,8 +71,19 @@ router.put('/editHoliday/:id', protect, adminOnly, holidayController.updateHolid
 router.delete('/deleteHoliday/:id', protect, adminOnly, holidayController.deleteHoliday);  
 
 // =================== Leave Routes ====================
-router.post('/request', protect, leaveController.requestLeave); 
-router.put('/approve/:id', protect, adminOnly,leaveController.approveLeave);  
+// Employee routes
+router.post('/request', protect, leaveController.requestLeave);
+router.get('/my-leaves', protect, leaveController.getMyLeaves);
+router.get('/balance', protect, leaveController.getLeaveBalance);
+router.get('/stats', protect, leaveController.getLeaveStats);
+router.get('/my-leavesGet/:id', protect, leaveController.getLeaveById);
+router.put('/my-leavesUpdate/:id', protect, leaveController.updateLeave);
+router.delete('my-leavesDelete/:id', protect, leaveController.deleteLeave);
+
+// Admin routes
+router.get('/allLeave', protect, adminOnly, leaveController.getAllLeaves);
+router.put('/approve/:id', protect, adminOnly, leaveController.approveLeave);
+router.patch('/reject/:id', protect, adminOnly, leaveController.rejectLeave); 
 
 // =================== SalaryRule Routes ====================
 router.post('/createSalary', protect, adminOnly, salaryRuleController.createSalaryRule);
