@@ -44,6 +44,103 @@ exports.adminLogin = async (req, res) => {
   }
 };
 
+
+// Admin profile
+exports.getAdminProfile = async (req, res) => {
+  try {
+    const admin = await User.findOne({
+      _id: req.user._id,
+      role: "admin",
+    }).select("-password");
+
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    res.json({
+      // Basic
+      _id: admin._id,
+      name: admin.name,
+      email: admin.email,
+      phone: admin.phone,
+      role: admin.role,
+
+      // Profile
+      profileImage: admin.profileImage || "",
+      department: admin.department || "",
+      designation: admin.designation || "",
+      address: admin.address || "",
+
+      // Account
+      status: admin.status,
+      isSuperAdmin: admin.isSuperAdmin,
+      permissions: admin.permissions || [],
+
+      // Meta
+      lastLogin: admin.lastLogin,
+      createdAt: admin.createdAt,
+      updatedAt: admin.updatedAt,
+    });
+  } catch (error) {
+    console.error("Get admin profile error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// update Admin Profile
+exports.updateAdminProfile = async (req, res) => {
+  try {
+    const admin = await User.findOne({
+      _id: req.user._id,
+      role: "admin",
+    });
+
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    // Allowed fields to update
+    const {
+      name,
+      phone,
+      profileImage,
+      department,
+      designation,
+      address,
+    } = req.body;
+
+    // Update only if value exists
+    if (name !== undefined) admin.name = name;
+    if (phone !== undefined) admin.phone = phone;
+    if (profileImage !== undefined) admin.profileImage = profileImage;
+    if (department !== undefined) admin.department = department;
+    if (designation !== undefined) admin.designation = designation;
+    if (address !== undefined) admin.address = address;
+
+    const updatedAdmin = await admin.save();
+
+    res.json({
+      message: "Admin profile updated successfully",
+      admin: {
+        _id: updatedAdmin._id,
+        name: updatedAdmin.name,
+        email: updatedAdmin.email,
+        phone: updatedAdmin.phone,
+        role: updatedAdmin.role,
+        profileImage: updatedAdmin.profileImage,
+        department: updatedAdmin.department,
+        designation: updatedAdmin.designation,
+        address: updatedAdmin.address,
+        updatedAt: updatedAdmin.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Update admin profile error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 // ================= USER LOGIN =================
 exports.userLogin = async (req, res) => {
   try {
@@ -226,6 +323,8 @@ exports.getAllUsers = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 // Update user (admin only)
 exports.adminUpdateUser = async (req, res) => {

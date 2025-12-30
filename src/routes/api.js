@@ -20,6 +20,8 @@ router.post("/users/userLogin", userController.userLogin);
 
 // =================== Admin Control Routes ====================
 router.post("/admin/create-user", protect, adminOnly, adminController.createUser); 
+router.get("/admin/getAdminProfile", protect, adminOnly, adminController.getAdminProfile); 
+router.put("/admin/updateAdminProfile", protect, adminOnly, adminController.updateAdminProfile); 
 router.get("/admin/getAll-user", protect, adminOnly, adminController.getAllUsers); 
 router.put("/admin/update-user/:id", protect, adminOnly, adminController.adminUpdateUser); 
 router.delete("/admin/user-delete/:id", protect, adminOnly, adminController.deleteUser); 

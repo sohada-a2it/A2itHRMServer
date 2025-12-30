@@ -23,20 +23,34 @@ const seedAdmin = async () => {
     console.log("\n=== Seeding Admin User ===");
 
     // Admin data
-    const adminData = {
-      firstName: "Super",
-      lastName: "Admin",
-      email: "a2itsohada@gmail.com",
-      password: "Admin123", // will be hashed in pre-save hook if schema has it
-      role: "admin",
-      isActive: true,
-      status: "active",
-      department: "Administration",
-      designation: "System Admin",
-      phone: "01700000000",
-      AdminId: "ADMIN-001",
-      picture: "https://example.com/default-avatar.png",
-    };
+const adminData = {
+  firstName: "Super",
+  lastName: "Admin",
+  email: "a2itsohada@gmail.com",
+  password: "Admin123",
+  role: "admin",
+
+  // Status
+  isActive: true,
+  status: "active",
+
+  // Organization
+  department: "Administration",
+  designation: "System Admin",
+
+  // Contact
+  phone: "01700000000",
+  AdminId: "ADMIN-001",
+
+  // Profile
+  picture: "https://example.com/default-avatar.png",
+  address: "Dhaka, Bangladesh",
+
+  // Permissions
+  isSuperAdmin: true,
+  permissions: ["manage_users", "view_reports"],
+};
+
 
     // Check if admin already exists
     let admin = await User.findOne({ email: adminData.email });
